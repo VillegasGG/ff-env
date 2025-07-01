@@ -1,0 +1,4 @@
+gymnasium>=0.28.1
+numpy>=1.21.0
+pyglet>=1.5.0             
+networkx>=3.0            
