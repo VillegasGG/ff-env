@@ -8,6 +8,15 @@ sys.path.append(str(Path(__file__).parent.parent / "src"))
 from environment import FFProblemEnv
 import numpy as np
 
+def print_observation(obs):
+    """
+    Imprime la observación del entorno.
+    """
+    print("Observation:")
+    for key, value in obs.items():
+        print(f"{key}: {value.shape} with values: {value}")
+    print("\n")
+
 def test_tree_creation():
     space_limits = (-1.0, 1.0) 
     num_nodes = 10  
@@ -66,14 +75,11 @@ def test_initial_reset():
             type_root_degree=type_root_degree
         )
         
-        obs = env.reset()
+        obs, inf = env.reset()
         
-        obs_dict = obs[0]
-
         print("=== Probando reset inicial del entorno para árbol aleatorio ===")
 
-        for key, value in obs_dict.items():
-            print(f"Observation - {key}: {value.shape} with values: {value}")
+        print_observation(obs)
 
         print("✔ Éxito: Reset inicial del entorno realizado correctamente")
 
@@ -99,21 +105,45 @@ def test_initial_reset_predefined():
             adjacency_matrix=adjacency_matrix
         )
 
-        obs = env.reset()
-        obs_dict = obs[0]
+        obs, inf= env.reset()
 
         print("=== Probando reset inicial del entorno para árbol predefinido ===")
-        for key, value in obs_dict.items():
-            print(f"Observation - {key}: {value.shape} with values: {value}")
-    
+        print_observation(obs)
+
         print("✔ Éxito: Reset inicial del entorno predefinido realizado correctamente")
 
     except Exception as e:
         print(f"✖ Error al realizar el reset inicial del entorno predefinido: {str(e)}")
         return
 
+def test_step():
+    space_limits = (-1.0, 1.0)
+    num_nodes = 10
+    root_degree = 3
+    type_root_degree = 'min'
+        
+    env = FFProblemEnv(
+        space_limits=space_limits,
+        num_nodes=num_nodes,
+        root_degree=root_degree,
+        type_root_degree=type_root_degree
+    )
+    obs = env.reset()
+        
+    obs, reward, done, info = env.step(1)
+    
+    print("=== Probando paso del entorno ===")
+    print_observation(obs)
 
+        # test other action
+    obs, reward, done, info = env.step(1)
+    print("=== Probando otro paso del entorno ===")
+    print_observation(obs)
+    print("✔ Éxito: Paso del entorno realizado correctamente")
+
+    
 if __name__ == "__main__":
-    test_tree_creation()
-    test_initial_reset()
-    test_initial_reset_predefined()
+    # test_tree_creation()
+    # test_initial_reset()
+    # test_initial_reset_predefined()
+    test_step()

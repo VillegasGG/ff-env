@@ -38,12 +38,12 @@ class FFProblemEnv(gym.Env):
 
         # If num_nodes is provided, generate a random tree
         if num_nodes is not None:
-            self.tree, self_root = tg.generate_random_tree(num_nodes, root_degree, type_root_degree, space_limits)
+            self.tree, self.root = tg.generate_random_tree(num_nodes, root_degree, type_root_degree, space_limits)
 
         # If node_positions is provided, use them
         elif node_positions is not None:
             self.tree = tg.generate_tree_from_adjacency_matrix(adjacency_matrix, node_positions)
-            self_root = root if root is not None else 0  # Default to 0 if root is not specified
+            self.root = root if root is not None else 0  # Default to 0 if root is not specified
 
         else:
             raise ValueError("Either num_nodes or node_positions/adjacency_matrix must be provided")
@@ -104,8 +104,14 @@ class FFProblemEnv(gym.Env):
         burned = self.fire_state.burned_nodes
         burning = self.fire_state.burning_nodes
 
+        print(f"Burned nodes: {burned}")
+        print(f"Burning nodes: {burning}")
+
         on_fire = burned.union(burning)
         protected = self.fire_state.protected_nodes
+
+        print(f"On fire nodes: {on_fire}")
+        print(f"Protected nodes: {protected}")
 
         return {
             "node_positions": node_positions,
@@ -114,6 +120,21 @@ class FFProblemEnv(gym.Env):
             "firefighter_position": self.ff_position
         }
     
+    def step(self, action):
+        if not self.fire_state.burning_nodes: 
+            print("No burning nodes, initializing fire state.")
+            self.fire_state.set_burning_nodes([self.root])
+    
+        else:
+            self.fire_state.propagate()
+    
+        obs = self._get_obs()
+        reward = 0  
+        done = False  
+    
+    
+        return obs, reward, done,  {}
+
     def reset(self, seed=None, options=None):
         """
         Resets the environment to an initial state.
