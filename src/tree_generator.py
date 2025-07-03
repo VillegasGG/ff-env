@@ -95,7 +95,7 @@ def generate_random_tree(n_nodes, root_degree, type_root_degree, space_limits, a
 
         if len(candidate_roots) > 0:
             root = np.random.choice(candidate_roots)
-            return create_tree_from_sequence(sequence, space_limits, add_positions), sequence.tolist(), int(root)
+            return create_tree_from_sequence(sequence, space_limits, add_positions), int(root)
 
     raise ValueError(f"Can't find a tree of {n_nodes} nodes and a root of degree {root_degree} in {max_trials} trials.")
 
