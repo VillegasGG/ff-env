@@ -45,7 +45,7 @@ def test_tree_creation():
     # Caso 2: Crear entorno con árbol predefinido
     print("\n=== Probando creación con árbol predefinido ===")
     try:
-        node_positions = np.random.uniform(low=-1, high=1, size=(5, 3))  # 5 nodos aleatorios en 3D
+        nodes_positions = np.random.uniform(low=-1, high=1, size=(5, 3))  # 5 nodos aleatorios en 3D
         adjacency_matrix = np.array([
             [0, 1, 0, 0, 0],
             [1, 0, 1, 1, 0],
@@ -57,7 +57,7 @@ def test_tree_creation():
         env_predefined = FFProblemEnv(
             space_limits=space_limits,
             speed=SPEED,
-            node_positions=node_positions,
+            nodes_positions=nodes_positions,
             adjacency_matrix=adjacency_matrix
         )
         print("✔ Éxito: Entorno creado con árbol predefinido")
@@ -95,7 +95,7 @@ def test_initial_reset():
 def test_initial_reset_predefined():
     try:
         space_limits = (-1.0, 1.0)
-        node_positions = np.random.uniform(low=-1, high=1, size=(5, 3))  # 5 nodos aleatorios en 3D
+        nodes_positions = np.random.uniform(low=-1, high=1, size=(5, 3))  # 5 nodos aleatorios en 3D
         adjacency_matrix = np.array([
             [0, 1, 0, 0, 0],
             [1, 0, 1, 1, 0],
@@ -107,7 +107,7 @@ def test_initial_reset_predefined():
         env = FFProblemEnv(
             space_limits=space_limits,
             speed=SPEED,
-            node_positions=node_positions,
+            nodes_positions=nodes_positions,
             adjacency_matrix=adjacency_matrix
         )
 
