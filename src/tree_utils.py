@@ -141,9 +141,6 @@ class Tree:
         """
         Devuelve una lista de los nodos vecinos de un nodo dado
         """
-
-        print(f"Getting neighbors for node {node}")
-        print(f"Nodes are: {self.nodes}")
         assert 0 <= node < len(self.nodes), "El índice del nodo está fuera de los límites"
 
 

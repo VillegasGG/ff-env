@@ -8,6 +8,8 @@ sys.path.append(str(Path(__file__).parent.parent / "src"))
 from environment import FFProblemEnv
 import numpy as np
 
+SPEED = 0.1  # Velocidad del bombero
+
 def print_observation(obs):
     """
     Imprime la observación del entorno.
@@ -28,6 +30,7 @@ def test_tree_creation():
     try:
         env_random = FFProblemEnv(
             space_limits=space_limits,
+            speed=SPEED,
             num_nodes=num_nodes,
             root_degree=root_degree,
             type_root_degree=type_root_degree
@@ -53,6 +56,7 @@ def test_tree_creation():
         
         env_predefined = FFProblemEnv(
             space_limits=space_limits,
+            speed=SPEED,
             node_positions=node_positions,
             adjacency_matrix=adjacency_matrix
         )
@@ -70,6 +74,7 @@ def test_initial_reset():
         
         env = FFProblemEnv(
             space_limits=space_limits,
+            speed=SPEED,
             num_nodes=num_nodes,
             root_degree=root_degree,
             type_root_degree=type_root_degree
@@ -101,6 +106,7 @@ def test_initial_reset_predefined():
 
         env = FFProblemEnv(
             space_limits=space_limits,
+            speed=SPEED,
             node_positions=node_positions,
             adjacency_matrix=adjacency_matrix
         )
@@ -124,6 +130,7 @@ def test_step():
         
     env = FFProblemEnv(
         space_limits=space_limits,
+        speed=SPEED,
         num_nodes=num_nodes,
         root_degree=root_degree,
         type_root_degree=type_root_degree
@@ -141,9 +148,33 @@ def test_step():
     print_observation(obs)
     print("✔ Éxito: Paso del entorno realizado correctamente")
 
-    
+def test_init():
+    try:
+        space_limits = (-1.0, 1.0)
+        num_nodes = 10
+        root_degree = 3
+        type_root_degree = 'min'
+
+        env = FFProblemEnv(
+            space_limits=space_limits,
+            speed=SPEED,
+            num_nodes=num_nodes,
+            root_degree=root_degree,
+            type_root_degree=type_root_degree
+        )
+
+        print("=== Probando inicialización del entorno para árbol aleatorio ===")
+        print('Firefighter initial position:', env.ff.position)
+        print("✔ Éxito: Inicialización del entorno realizada correctamente")
+
+    except Exception as e:
+        print(f"✖ Error al realizar la inicialización del entorno: {str(e)}")
+        return
+
+
 if __name__ == "__main__":
-    # test_tree_creation()
-    # test_initial_reset()
-    # test_initial_reset_predefined()
+    test_tree_creation()
+    test_initial_reset()
+    test_initial_reset_predefined()
     test_step()
+    test_init()

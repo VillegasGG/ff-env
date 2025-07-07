@@ -4,9 +4,10 @@ import numpy as np
 import tree_generator as tg
 from tree_utils import Tree
 from fire_state import FireState
+from firefighter import Firefighter
 
 class FFProblemEnv(gym.Env):
-    def __init__(self, space_limits, num_nodes=None, root_degree=None, type_root_degree=None, node_positions=None, adjacency_matrix=None, root=None):
+    def __init__(self, space_limits, speed, position = None, num_nodes=None, root_degree=None, type_root_degree=None, node_positions=None, adjacency_matrix=None, root=None):
         '''
         Initializes the environment for the FFProblem.
         Parameters:
@@ -25,16 +26,7 @@ class FFProblemEnv(gym.Env):
         
         # Create tree or use provided parameters
 
-        # Validate input combinations
-        if num_nodes is not None and (node_positions is not None or adjacency_matrix is not None):
-            raise ValueError("Cannot specify both num_nodes and node_positions/adjacency_matrix")
-        
-        if node_positions is not None and adjacency_matrix is None:
-            raise ValueError("If node_positions is provided, adjacency_matrix must also be provided")
-        
-        if adjacency_matrix is not None and node_positions is None:
-            raise ValueError("If adjacency_matrix is provided, node_positions must also be provided")
-        
+        self.validate_init_params(num_nodes, node_positions, adjacency_matrix)
 
         # If num_nodes is provided, generate a random tree
         if num_nodes is not None:
@@ -53,6 +45,12 @@ class FFProblemEnv(gym.Env):
 
         min_pos = space_limits[0]
         max_pos = space_limits[1]
+
+
+        # Initialize ff
+        if position is None:
+            position = np.random.uniform(low=min_pos, high=max_pos, size=(3,))
+        self.ff = Firefighter(speed=speed, position=position, remaining_time=1.0)
 
         # Initialize ff random position
         self.ff_position = np.random.uniform(low=min_pos, high=max_pos, size=(3,))
@@ -104,14 +102,8 @@ class FFProblemEnv(gym.Env):
         burned = self.fire_state.burned_nodes
         burning = self.fire_state.burning_nodes
 
-        print(f"Burned nodes: {burned}")
-        print(f"Burning nodes: {burning}")
-
         on_fire = burned.union(burning)
         protected = self.fire_state.protected_nodes
-
-        print(f"On fire nodes: {on_fire}")
-        print(f"Protected nodes: {protected}")
 
         return {
             "node_positions": node_positions,
@@ -154,3 +146,20 @@ class FFProblemEnv(gym.Env):
         self.ff_position = np.random.uniform(low=self.action_space.low, high=self.action_space.high)
 
         return self._get_obs(), {}
+    
+    def validate_init_params(self, num_nodes, node_positions, adjacency_matrix):
+        """
+        Validates the initialization parameters for the environment.
+        Raises:
+        - ValueError if the parameters are inconsistent.
+        """
+                # Validate input combinations
+        if num_nodes is not None and (node_positions is not None or adjacency_matrix is not None):
+            raise ValueError("Cannot specify both num_nodes and node_positions/adjacency_matrix")
+        
+        if node_positions is not None and adjacency_matrix is None:
+            raise ValueError("If node_positions is provided, adjacency_matrix must also be provided")
+        
+        if adjacency_matrix is not None and node_positions is None:
+            raise ValueError("If adjacency_matrix is provided, node_positions must also be provided")
+        
