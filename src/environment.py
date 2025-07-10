@@ -5,6 +5,7 @@ import tree_generator as tg
 from tree_utils import Tree
 from fire_state import FireState
 from firefighter import Firefighter
+from candidates_utils import get_candidates
 
 class FFProblemEnv(gym.Env):
     def __init__(self, space_limits, speed, position = None, num_nodes=None, root_degree=None, type_root_degree=None, nodes_positions=None, adjacency_matrix=None, root=None):
@@ -30,16 +31,19 @@ class FFProblemEnv(gym.Env):
 
         # If num_nodes is provided, generate a random tree
         if num_nodes is not None:
-            self.tree, self.root = tg.generate_random_tree(num_nodes, root_degree, type_root_degree, space_limits)
+            u_tree, self.root = tg.generate_random_tree(num_nodes, root_degree, type_root_degree, space_limits)
 
         # If nodes_positions is provided, use them
         elif nodes_positions is not None:
-            self.tree = tg.generate_tree_from_adjacency_matrix(adjacency_matrix, nodes_positions)
+            u_tree = tg.generate_tree_from_adjacency_matrix(adjacency_matrix, nodes_positions)
             self.root = root if root is not None else 0  # Default to 0 if root is not specified
 
         else:
             raise ValueError("Either num_nodes or nodes_positions/adjacency_matrix must be provided")
 
+        # Convert tree to direct
+        self.tree, _ = u_tree.convert_to_directed(self.root)
+        
         # Initialize fire state
         self.fire_state = FireState(self.tree)
 
@@ -103,8 +107,8 @@ class FFProblemEnv(gym.Env):
         protected = self.fire_state.protected_nodes
 
         return {
-            "adjacency_matrix": self.tree.edges,
-            "nodes_distances": self.ff.get_distances_to_nodes(self.tree.nodes),
+            "nodes_positions": self.tree.nodes_positions,
+            "feasible_nodes": self.fire_state.feasible_nodes,
             "on_fire_nodes": np.array(list(on_fire)),
             "protected_nodes": np.array(list(protected)),
             "firefighter_position": self.ff.position,
@@ -148,6 +152,10 @@ class FFProblemEnv(gym.Env):
                     self.ff.protecting_node = node
                     self.fire_state.propagate()
                     self.ff.init_remaining_time()
+       
+        # Update feasible nodes
+        feasibles = get_candidates(self.tree, self.fire_state, self.ff)
+        self.fire_state.set_feasible_nodes(feasibles)
         
         reward = 0
         done = False

@@ -16,7 +16,7 @@ def is_protected_by_descendant(node, tree, state):
 
 def get_not_protected_nodes(tree, state):
     candidates = set()
-    unnafected_nodes = set(tree.nodes) - state.burned_nodes - state.protected_nodes - state.burning_nodes
+    unnafected_nodes = set(tree.nodes) - set(state.burned_nodes) - set(state.protected_nodes) - set(state.burning_nodes)
 
     for element in unnafected_nodes:
         is_protected_anc = is_protected_by_ancestor(element, tree, state)

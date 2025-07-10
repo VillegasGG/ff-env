@@ -4,12 +4,16 @@ class FireState:
         self.burned_nodes = set()  
         self.burning_nodes = set()
         self.protected_nodes = set()
+        self.feasible_nodes = {}
     
     def set_burned_nodes(self, burned_nodes):
         self.burned_nodes = burned_nodes
 
     def set_burning_nodes(self, burning_nodes):
         self.burning_nodes = burning_nodes
+
+    def set_feasible_nodes(self, feasible_nodes):
+        self.feasible_nodes = feasible_nodes
 
     def propagate(self):
         new_burning_nodes = set()

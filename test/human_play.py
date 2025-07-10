@@ -18,26 +18,28 @@ def test_human_play():
     obs = env.reset()
     print("Initializing fire...")
     obs, reward, done, info = env.step(None)  # Start the fire propagation
+    num_nodes = len(obs['nodes_positions'])
 
     while not done:
         print("Current observation:")
-        print(f"Matrix adjacency:\n{obs['adjacency_matrix']}")
+        print(f"Feasible:\n{obs['feasible_nodes']}")
         print(f"On fire nodes: {obs['on_fire_nodes']}")
         print(f"Protected nodes: {obs['protected_nodes']}")
         print("Firefighter position:", obs['firefighter_position'])
         print("Remaining time:", obs['firefighter_remaining_time'])
         print("Protecting:", obs['firefighter_protecting_node'])
         print("Which node do you want to protect?")
-        nodes_distances = obs['nodes_distances']
-        for i, dist in nodes_distances.items():
-            print(f"Node {i} distance: {dist}")
+        nodes_distances = obs['feasible_nodes']
+        for feasible in nodes_distances:
+            print(f"Candidate {feasible[0]}: {feasible[1]:.2f} time to reach")
         res = input("Enter node index to protect (or 'exit' to quit): ")
         if res.lower() == 'exit':
             print("Exiting human play test.")
             break
         
         node_index = int(res)
-        if 0 <= node_index < len(nodes_distances):
+
+        if 0 <= node_index < num_nodes:
             obs, reward, done, info = env.step(node_index)
             print(f"Protected node {node_index}.")
         else:
@@ -45,8 +47,7 @@ def test_human_play():
             
 
     print("Final observation:")
-    print(f"On fire nodes: {obs['on_fire_nodes']}")
-    print(f"Protected nodes: {obs['protected_nodes']}")
+    print(f"Feasible nodes: {obs['feasible_nodes']}")
     print("Firefighter position:", obs['firefighter_position'])
     print("Remaining time:", obs['firefighter_remaining_time'])
     print("Protecting:", obs['firefighter_protecting_node'])
