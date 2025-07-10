@@ -21,25 +21,34 @@ def test_human_play():
 
     while not done:
         print("Current observation:")
+        print(f"Matrix adjacency:\n{obs['adjacency_matrix']}")
         print(f"On fire nodes: {obs['on_fire_nodes']}")
+        print(f"Protected nodes: {obs['protected_nodes']}")
         print("Firefighter position:", obs['firefighter_position'])
         print("Remaining time:", obs['firefighter_remaining_time'])
-        print("Protectig:", obs['firefighter_protecting_node'])
+        print("Protecting:", obs['firefighter_protecting_node'])
         print("Which node do you want to protect?")
-        nodes_positions = obs['nodes_positions']
-        for i, pos in enumerate(nodes_positions):
-            print(f"Node {i} position: {pos}")
+        nodes_distances = obs['nodes_distances']
+        for i, dist in nodes_distances.items():
+            print(f"Node {i} distance: {dist}")
         res = input("Enter node index to protect (or 'exit' to quit): ")
         if res.lower() == 'exit':
             print("Exiting human play test.")
             break
         
         node_index = int(res)
-        if 0 <= node_index < len(nodes_positions):
+        if 0 <= node_index < len(nodes_distances):
             obs, reward, done, info = env.step(node_index)
             print(f"Protected node {node_index}.")
         else:
             print("Invalid node index. Please try again.")
             
+
+    print("Final observation:")
+    print(f"On fire nodes: {obs['on_fire_nodes']}")
+    print(f"Protected nodes: {obs['protected_nodes']}")
+    print("Firefighter position:", obs['firefighter_position'])
+    print("Remaining time:", obs['firefighter_remaining_time'])
+    print("Protecting:", obs['firefighter_protecting_node'])
 
 test_human_play()

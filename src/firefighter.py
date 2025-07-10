@@ -24,6 +24,15 @@ class Firefighter:
     def get_distance_to_node(self, node):
         position_node = self.tree.nodes_positions[node]
         return np.linalg.norm(position_node - self.position)    
+
+    def get_distances_to_nodes(self, nodes):
+        """
+        Obtiene la distancia de todos los nodos al bombero
+        """
+        distances = {}
+        for node in nodes:
+            distances[int(node)] = float(self.get_distance_to_node(node))
+        return distances
     
     def init_remaining_time(self):
         self.remaining_time = 1

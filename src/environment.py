@@ -103,7 +103,8 @@ class FFProblemEnv(gym.Env):
         protected = self.fire_state.protected_nodes
 
         return {
-            "nodes_positions": nodes_positions,
+            "adjacency_matrix": self.tree.edges,
+            "nodes_distances": self.ff.get_distances_to_nodes(self.tree.nodes),
             "on_fire_nodes": np.array(list(on_fire)),
             "protected_nodes": np.array(list(protected)),
             "firefighter_position": self.ff.position,
@@ -145,6 +146,8 @@ class FFProblemEnv(gym.Env):
                 else:
                     self.ff.move_fraction(node_position)
                     self.ff.protecting_node = node
+                    self.fire_state.propagate()
+                    self.ff.init_remaining_time()
         
         reward = 0
         done = False
