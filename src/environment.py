@@ -2,7 +2,6 @@ import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
 import tree_generator as tg
-from tree_utils import Tree
 from fire_state import FireState
 from firefighter import Firefighter
 from candidates_utils import get_candidates
@@ -96,8 +95,6 @@ class FFProblemEnv(gym.Env):
         Returns:
         - A dictionary containing the observation.
         """
-        # Node positions
-        nodes_positions = np.array(self.tree.nodes_positions)
 
         # Fire state    
         burned = self.fire_state.burned_nodes
@@ -127,7 +124,7 @@ class FFProblemEnv(gym.Env):
     
         else:
             # Move firefighter to the new position
-            if node is None:
+            if node is None:        # -If node is None, firefighter will not move
                 print("No node provided, ff will not move.")
                 self.fire_state.propagate()
             else:
