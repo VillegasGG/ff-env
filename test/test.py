@@ -5,7 +5,7 @@ from pathlib import Path
 # Añadir la carpeta src al path de Python
 sys.path.append(str(Path(__file__).parent.parent / "src"))
 
-from environment import FFProblemEnv
+from ffenv.environment import FFProblemEnv
 import numpy as np
 
 SPEED = 0.1  # Velocidad del bombero
@@ -16,7 +16,7 @@ def print_observation(obs):
     """
     print("Observation:")
     for key, value in obs.items():
-        print(f"{key}: {value.shape} with values: {value}")
+        print(f"{key}: with values: {value}")
     print("\n")
 
 def test_tree_creation():
@@ -140,7 +140,6 @@ def test_step():
     obs, reward, done, info = env.step(1)
     
     print("=== Probando paso del entorno ===")
-    print_observation(obs)
 
         # test other action
     obs, reward, done, info = env.step(1)
