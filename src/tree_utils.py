@@ -148,37 +148,3 @@ class Tree:
         neighbors = np.argwhere(self.edges[node] == 1).flatten()
         
         return neighbors
-
-class TREE(Structure):
-    _fields_ = [
-        ("n_nodes", c_uint8),
-        ("height", c_uint8),
-        ("n_leaves", c_uint8),
-        ("nodes", POINTER(c_uint8)),
-        ("nodes_x", POINTER(c_float)),
-        ("nodes_y", POINTER(c_float)),
-        ("nodes_z", POINTER(c_float)),
-        ("egdes", POINTER(POINTER(c_float)))
-    ]
-
-
-def tree_to_structure(tree):
-    assert tree.is_directed, "The tree must be converted to directed"
-
-    n_nodes = tree.nodes.shape[0]
-    n_positions = tree.nodes_positions.shape[0]
-    n_leaves = (int) (np.argwhere(tree.edges.sum(axis=-1) == 0).flatten().shape[0])
-
-    return TREE(
-        n_nodes,
-        tree.height,
-        n_leaves,
-        (c_uint8 * n_nodes)(*tree.nodes.tolist()),
-        (c_float * n_positions)(*tree.nodes_positions[:, 0].tolist()),
-        (c_float * n_positions)(*tree.nodes_positions[:, 1].tolist()),
-        (c_float * n_positions)(*tree.nodes_positions[:, 2].tolist()),
-
-        (POINTER(c_float) * n_nodes)(*[ (c_float * n_nodes)(*r) for r in tree.edges.tolist()])
-        )
-        
-
