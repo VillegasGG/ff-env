@@ -130,8 +130,6 @@ class FFProblemEnv(gym.Env):
             else:
                 # Move firefighter to the new position
                 time_to_reach_node = self.ff.get_distance_to_node(node) / self.ff.speed
-                print(f"Time to reach node {node}: {time_to_reach_node:.2f}")
-                print(f"Firefighter remaining time: {self.ff.get_remaining_time():.2f}")
                 node_position = self.tree.nodes_positions[node]
 
                 if self.ff.get_remaining_time() == time_to_reach_node:
