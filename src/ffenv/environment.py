@@ -156,7 +156,6 @@ class FFProblemEnv(gym.Env):
         done = False
 
         if self.fire_state.is_completely_burned():
-            print("All nodes are burned, ending episode.")
             done = True
             reward = len(self.tree.nodes) - len(self.fire_state.burned_nodes) - len(self.fire_state.burning_nodes)
         
