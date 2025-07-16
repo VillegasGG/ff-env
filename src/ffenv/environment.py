@@ -125,7 +125,6 @@ class FFProblemEnv(gym.Env):
         else:
             # Move firefighter to the new position
             if node is None:        # -If node is None, firefighter will not move
-                print("No node provided, ff will not move.")
                 self.fire_state.propagate()
             else:
                 # Move firefighter to the new position
